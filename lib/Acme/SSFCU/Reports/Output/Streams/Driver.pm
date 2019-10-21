@@ -1,4 +1,4 @@
-package Acme::SSFCU::Reports::Output::Driver;
+package Acme::SSFCU::Reports::Output::Streams::Driver;
 
 # ABSTRACT: This is the base class for other Driver modules
 

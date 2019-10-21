@@ -4,7 +4,6 @@ use strict;
 use warnings;
 
 use Math::Currency;
-use feature qw/say/;
 
 use base 'Acme::SSFCU::Reports::Output::Driver';
 
@@ -18,7 +17,7 @@ sub calculate {
         $total_income += $trxn->credit_amount;
     }
 
-    return $total_income->as_float;
+    return __PACKAGE__ . " " . $total_income->as_float;
 }
 
 1;

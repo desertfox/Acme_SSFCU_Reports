@@ -15,15 +15,12 @@ sub run {
     my $class = shift;
     my %args  = ref $_[0] eq 'HASH' && @_ == 1 ? %{ $_[0] } : @_;
 
-    my $HISTORY
-        = Acme::SSFCU::Reports::History->new( csv_file => $args{csv_file} );
-
-    my $OUTPUT = Acme::SSFCU::Reports::Output->new(
-        history => $HISTORY,
-        drivers => $args{opts}->{drivers}
+    return Acme::SSFCU::Reports::Output->new(
+        history =>
+            Acme::SSFCU::Reports::History->new( csv_file => $args{csv_file} ),
+        drivers => $args{opts}->{drivers},
     )->execute();
 
-    p $OUTPUT;
 }
 
 1;

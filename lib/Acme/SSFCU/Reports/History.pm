@@ -33,6 +33,8 @@ sub parse_ssfcu_csv_file {
     my @transactions
         = map { Transaction->build_from_csv_line_array($_) } @{$lines};
 
+    croak "Unable to find transactions" unless @transactions;
+
     return \@transactions;
 }
 
