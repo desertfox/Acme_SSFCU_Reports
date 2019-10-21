@@ -1,0 +1,46 @@
+
+use strict;
+use warnings;
+
+use Getopt::Long::Descriptive;
+use aliased 'Acme::SSFCU::Reports';
+
+my ( $opt, $usage ) = describe_options(
+    'ssfcu_report %o <some-arg>',
+    [ 'file|f=s', "CSV file of transactions", { required => 1 } ],
+    [],
+    [ 'totals|t', "Print Total In/Out", ],
+    [ 'date|d',   "Print Totals by Date" ],
+    [ 'issuer|i', "Print Totals by Description Field" ],
+    [ 'help', "print usage message and exit", { shortcircuit => 1 } ],
+);
+
+Reports->run(
+    csv_file => $opt->file,
+    opts     => {
+        drivers => {
+            IncomeTotals => $opt->totals,
+            Date         => $opt->date,
+            Issuer       => $opt->issuer,
+        }
+    }
+);
+
+1;
+
+__END__
+
+ssfcu_report [-dfit] [long options...] <some-arg>
+    -f STR --file STR  CSV file of transactions
+
+    -t --totals        Print Total In/Out
+    -d --date          Print Totals by Date
+    -i --issuer        Print Totals by Description Field
+    --help             print usage message and exit
+
+
+EXP
+    --security     #todo
+
+
+Order of totals/date/issuer flags determines output. 
