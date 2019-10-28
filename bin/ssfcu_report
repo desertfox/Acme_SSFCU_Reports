@@ -2,8 +2,9 @@
 use strict;
 use warnings;
 
-use Getopt::Long::Descriptive;
-use aliased 'Acme::SSFCU::Reports';
+use Getopt::Long::Descriptive;    # Drop
+
+use aliased 'Acme::SSFCU::Report';
 
 my ( $opt, $usage ) = describe_options(
     'ssfcu_report %o <some-arg>',
@@ -12,19 +13,19 @@ my ( $opt, $usage ) = describe_options(
     [ 'totals|t', "Print Total In/Out", ],
     [ 'date|d',   "Print Totals by Date" ],
     [ 'issuer|i', "Print Totals by Description Field" ],
+    [ 'output|o', "Ouput, default STDOUT", { default => 'STDOUT' } ],
     [ 'help', "print usage message and exit", { shortcircuit => 1 } ],
 );
 
-Reports->run(
-    csv_file => $opt->file,
-    opts     => {
-        drivers => {
-            IncomeTotals => $opt->totals,
-            Date         => $opt->date,
-            Issuer       => $opt->issuer,
-        }
-    }
-);
+Report->new(
+    source  => { csv_file => $opt->file },
+    filters => [
+        { IncomeTotals => $opt->totals },
+        { Date         => $opt->date },
+        { Issuer       => $opt->issuer },
+    ],
+    output => $opt->output,
+)->run;
 
 1;
 

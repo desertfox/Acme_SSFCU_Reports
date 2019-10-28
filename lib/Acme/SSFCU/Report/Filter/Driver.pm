@@ -1,10 +1,10 @@
-package Acme::SSFCU::Reports::Output::Streams::Driver;
+package Acme::SSFCU::Report::Filter::Driver;
 
 # ABSTRACT: This is the base class for other Driver modules
 
 use Carp;
 
-sub execute {
+sub calculate {
 	croak "This method must be implemented " . caller(3);
 }
 

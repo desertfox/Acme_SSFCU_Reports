@@ -1,11 +1,11 @@
-package Acme::SSFCU::Reports::Output::IncomeTotals;
+package Acme::SSFCU::Report::Filter::IncomeTotals;
 
 use strict;
 use warnings;
 
 use Math::Currency;
 
-use base 'Acme::SSFCU::Reports::Output::Driver';
+use base 'Acme::SSFCU::Report::Filter::Driver';
 
 sub calculate {
     my $class   = shift;

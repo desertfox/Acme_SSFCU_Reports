@@ -1,4 +1,4 @@
-package Acme::SSFCU::Reports::Transaction;
+package Acme::SSFCU::Report::History::Transaction;
 
 use Moo;
 use namespace::autoclean;

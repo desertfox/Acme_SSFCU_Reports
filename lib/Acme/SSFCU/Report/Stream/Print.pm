@@ -1,4 +1,4 @@
-package Acme::SSFCU::Reports::Output::Streams::Print;
+package Acme::SSFCU::Report::Output::Stream::Print;
 
 # ABSTRACT: This is the base class for other Driver modules
 use Moo;

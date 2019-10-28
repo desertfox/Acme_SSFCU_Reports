@@ -1,4 +1,4 @@
-package Acme::SSFCU::Reports::History;
+package Acme::SSFCU::Report::History;
 
 #ABSTRACT: Module for generating various reports via SSFCU downloaded csv transaction histroy files.
 
@@ -9,7 +9,7 @@ use Carp;
 use Text::CSV qw|csv|;
 use Math::Currency;
 
-use aliased 'Acme::SSFCU::Reports::Transaction';
+use aliased 'Acme::SSFCU::Report::History::Transaction';
 
 has csv_file     => ( is => 'ro' );
 has transactions => ( is => 'ro', required => 1 );
