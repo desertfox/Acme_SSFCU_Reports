@@ -1,4 +1,4 @@
-package Acme::SSFCU::Report::Filter::IncomeTotals;
+package Acme::SSFCU::Report::Filter::NetProfit;
 
 use strict;
 use warnings;
@@ -13,8 +13,8 @@ sub calculate {
 
     my $total_income = Math::Currency->new('0.00');
     foreach my $trxn ( @{ $history->transactions } ) {
-        next unless $trxn->credit_amount;
-        $total_income += $trxn->credit_amount;
+        next unless $trxn->amount;
+        $total_income += $trxn->amount;
     }
 
     return __PACKAGE__ . " " . $total_income->as_float;

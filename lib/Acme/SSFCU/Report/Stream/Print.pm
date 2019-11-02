@@ -12,7 +12,7 @@ sub execute {
 
     my $fake_fh = $self->handle;
 
-    print $fake_fh $data;
+    print $fake_fh $data . "\n";
 
     return;
 }

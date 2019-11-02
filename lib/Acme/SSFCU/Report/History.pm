@@ -22,6 +22,12 @@ around BUILDARGS => sub {
     return $class->$orig(%args);
 };
 
+sub sort_by_date {
+    my $self = shift;
+
+    return sort { $b->date <=> $a->date } @{$self->transactions}
+}
+
 sub parse_ssfcu_csv_file {
     my $file = shift;
 
