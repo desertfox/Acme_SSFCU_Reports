@@ -10,7 +10,7 @@ use Class::Load qw/load_class/;
 
 has filters => ( is => 'rw' );
 
-sub apply_filter {
+sub generate_report_data {
     my $self    = shift;
     my $history = shift;
 

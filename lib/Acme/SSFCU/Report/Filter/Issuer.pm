@@ -12,22 +12,25 @@ sub calculate {
     my %per_descriptions;
     foreach my $trxn ( @{ $history->transactions } ) {
         my $description = $trxn->description;
-        $description =~ s/\d{2}\/\d{2}\s+?//;
+        $description =~ s/\d{2}\/\d{2}\s+?//;   #Remove dates to help condense
         $per_descriptions{$description} += $trxn->amount;
     }
 
     my @sorted_desc = sort { $per_descriptions{$b} <=> $per_descriptions{$a} }
         keys %per_descriptions;
 
-    my $output;
+    my @data;
     foreach my $description (@sorted_desc) {
-        $output .= sprintf( qq|Description: %s, Total: %s|,
-            $description, $per_descriptions{$description} )
-            . "\n";
+        push( @data, [ $description, $per_descriptions{$description} ] );
     }
 
-    return __PACKAGE__ . "\n" . $output;
-
+    return {
+        filter_name => $class,
+        filter_data => {
+            title => qq|Description: %s, Total: %s|,
+            data  => \@data,
+        }
+    };
 }
 
 1;

@@ -8,4 +8,5 @@ sub calculate {
 	croak "This method must be implemented " . caller(3);
 }
 
+
 1;

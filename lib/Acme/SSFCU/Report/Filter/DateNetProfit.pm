@@ -9,10 +9,8 @@ sub calculate {
     my $class   = shift;
     my $history = shift;
 
-    my @sorted_by_date = $history->sort_by_date();
-
     my %per_day_totals;
-    foreach my $trxn (@sorted_by_date) {
+    foreach my $trxn ( @{ $history->transactions } ) {
         if ( exists $per_day_totals{ $trxn->date->ymd } ) {
             $per_day_totals{ $trxn->date->ymd }{amount} += $trxn->amount;
         }
@@ -28,6 +26,28 @@ sub calculate {
         = sort { $per_day_totals{$b}{date} <=> $per_day_totals{$a}{date} }
         keys %per_day_totals;
 
+    my @data;
+    foreach my $date (@sorted_by_date_totals) {
+        push(
+            @data,
+            [   $per_day_totals{$date}{date}->ymd,
+                "$per_day_totals{$date}{amount}"
+            ]
+        );
+    }
+
+    return {
+        filter_name => $class,
+        filter_data => {
+            title => qq|Date: %s, Total: %s|,
+            data  => \@data,
+        }
+    };
+}
+
+1;
+
+__END__
     my $output;
     foreach my $date (@sorted_by_date_totals) {
         $output .= sprintf(
@@ -37,7 +57,4 @@ sub calculate {
         ) . "\n";
     }
 
-    return __PACKAGE__ . "\n" . $output;
-}
-
-1;
+    return $class . "\n" . $output;

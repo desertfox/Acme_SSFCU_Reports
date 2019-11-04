@@ -17,7 +17,13 @@ sub calculate {
         $total_income += $trxn->amount;
     }
 
-    return __PACKAGE__ . " " . $total_income->as_float;
+    return {
+        filter_name => $class,
+        filter_data => {
+            title => qq|Total: %s|,
+            data  => [$total_income],
+        }
+    };
 }
 
 1;

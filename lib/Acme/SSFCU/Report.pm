@@ -35,9 +35,9 @@ around BUILDARGS => sub {
 sub run {
     my $self = shift;
 
-    my $filter_array_ref = $self->filter->apply_filter( $self->history );
+    my $filtered_report_data_aref = $self->filter->generate_report_data( $self->history );
 
-    return $self->output->execute($filter_array_ref);
+    return $self->output->generate_output($filtered_report_data_aref);
 }
 
 1;
