@@ -3,17 +3,24 @@ package Acme::SSFCU::Report::History::Iterator;
 use Moo;
 use namespace::autoclean;
 
+use Carp;
 use aliased 'Acme::SSFCU::Report::History::Transaction::Factory' =>
     'Transaction_Factory';
 
 has _index   => ( is => 'rw', default => 0 );
-has _history => ( is => 'rw' );
+has _history => (
+    is  => 'rw',
+    isa => sub {
+        croak "Incorrect _history Type: " . ref $_[0]
+            unless ref $_[0] eq 'Acme::SSFCU::Report::History';
+    },
+    handles => { "transactions" => "transactions" }
+);
 
 sub is_done {
     my $self = shift;
 
-    return (   $self->{_index} >= $self->get_count()
-            && $self->reset_index );
+    return ( $self->_index >= $self->get_count() && $self->reset_index );
 }
 
 sub next {
@@ -25,12 +32,14 @@ sub next {
 sub get_transaction {
     my $self = shift;
 
-    return $self->{_history}->{transactions}[ $self->{_index} ];
+    return $self->transactions->[ $self->_index ];
 }
 
 sub reset_index {
     my $self = shift;
+
     $self->{_index} = 0;
+
     return 1;
 }
 
@@ -38,7 +47,7 @@ sub add_transaction {
     my $self        = shift;
     my $transaction = shift;
 
-    push( @{ $self->{_history}->{transactions} }, $transaction );
+    push( @{ $self->transactions }, $transaction );
 
     return;
 }
@@ -59,7 +68,7 @@ sub add_source {
 sub get_count {
     my $self = shift;
 
-    return scalar @{ $self->{_history}->{transactions} };
+    return scalar @{ $self->transactions };
 }
 
 1;

@@ -56,9 +56,9 @@ sub _build_output {
 sub BUILD {
     my $self = shift;
 
-    $self->add_source($_) foreach @{ $self->{sources} };
+    $self->add_source($_) foreach @{ $self->sources };
 
-    $self->add_filter($_) foreach @{ $self->{filter_list} };
+    $self->add_filter($_) foreach @{ $self->filter_list };
 
     $self->generate_output();
 

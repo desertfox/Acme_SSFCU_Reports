@@ -6,16 +6,24 @@ use warnings;
 use Moo;
 use namespace::autoclean;
 
+use Carp;
 use Class::Load qw/load_class/;
 
 has _index  => ( is => 'rw', default => 0 );
-has _filter => ( is => 'rw' );
+has _filter => (
+    is  => 'rw',
+    isa => sub {
+        croak "Incorrect _filter Type: " . ref $_[0]
+            unless ref $_[0] eq 'Acme::SSFCU::Report::Filter';
+        },
+        handles => { "filters" => "filters" }
+
+);
 
 sub is_done {
     my $self = shift;
 
-    return (   $self->{_index} >= $self->get_count()
-            && $self->reset_index );
+    return ( $self->_index >= $self->get_count() && $self->reset_index );
 }
 
 sub next {
@@ -27,15 +35,19 @@ sub next {
 sub get_filter {
     my $self = shift;
 
-    my $filter_name = $self->{_filter}->{filters}[ $self->{_index} ];
-    my $filter = sprintf qq|Acme::SSFCU::Report::Filter::%s|, $filter_name;
+    my $filter = sprintf qq|Acme::SSFCU::Report::Filter::%s|,
+        $self->filters->[ $self->_index ];
+
     load_class($filter);
+
     return $filter;
 }
 
 sub reset_index {
     my $self = shift;
+
     $self->{_index} = 0;
+
     return 1;
 }
 
@@ -43,7 +55,7 @@ sub add_filter {
     my $self   = shift;
     my $filter = shift;
 
-    push( @{ $self->{_filter}{filters} }, $filter );
+    push( @{ $self->filters() }, $filter );
 
     return;
 }
@@ -51,7 +63,7 @@ sub add_filter {
 sub get_count {
     my $self = shift;
 
-    return scalar @{ $self->{_filter}{filters} };
+    return scalar @{ $self->filters };
 }
 
 1;
