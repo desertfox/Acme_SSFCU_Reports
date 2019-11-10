@@ -23,9 +23,8 @@ sub generate_report_data {
 
     my @results;
     while ( !$self->iterator->is_done() ) {
-        my $filter = $self->iterator->get_filter();
-        push( @results, $filter->calculate($history) );
-        $self->iterator->next;
+        push( @results, $self->iterator->get_filter()->calculate($history) )
+            && $self->iterator->next;
     }
 
     return \@results;

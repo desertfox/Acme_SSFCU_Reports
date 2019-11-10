@@ -26,11 +26,12 @@ push( @filters, 'Issuer' )        if $opt->issuer;
 push( @filters, 'Gains' )         if $opt->gains;
 push( @filters, 'Losses' )        if $opt->losses;
 
-Report->new(
+Report->run(
     sources     => [ $opt->file ],
     filter_list => \@filters,
+
     #output      => $opt->output,
-)->run;
+);
 
 1;
 

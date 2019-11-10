@@ -40,7 +40,18 @@ has filter => (
     handles => [qw|add_filter|]
 );
 
-has output => ( is => 'ro', default => sub { return Output->new; } );
+has output => (
+    is      => 'rw',
+    lazer   => 1,
+    builder => '_build_output',
+    handles => [qw|generate_output|]
+);
+
+sub _build_output {
+    my $self = shift;
+
+    return Output->new( filter => $self->filter, history => $self->history );
+}
 
 sub BUILD {
     my $self = shift;
@@ -49,16 +60,13 @@ sub BUILD {
 
     $self->add_filter($_) foreach @{ $self->{filter_list} };
 
+    $self->generate_output();
+
     return $self;
 }
 
 sub run {
-    my $self = shift;
-
-    my $filtered_report_data_aref
-        = $self->filter->generate_report_data( $self->history );
-
-    return $self->output->generate_output($filtered_report_data_aref);
+    return shift->new(@_);
 }
 
 1;

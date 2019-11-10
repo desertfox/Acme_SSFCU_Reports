@@ -51,15 +51,3 @@ sub calculate {
 }
 
 1;
-
-__END__
-    my $output;
-    foreach my $date (@sorted_by_date_totals) {
-        $output .= sprintf(
-            qq|Date: %s, Total: %s|,
-            $per_day_totals{$date}{date}->ymd,
-            $per_day_totals{$date}{amount}
-        ) . "\n";
-    }
-
-    return $class . "\n" . $output;

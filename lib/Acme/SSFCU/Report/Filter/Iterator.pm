@@ -14,7 +14,7 @@ has _filter => ( is => 'rw' );
 sub is_done {
     my $self = shift;
 
-    return (   $self->{_index} >= $self->{_filter}->get_count()
+    return (   $self->{_index} >= $self->get_count()
             && $self->reset_index );
 }
 
