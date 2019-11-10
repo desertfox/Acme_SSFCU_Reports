@@ -9,18 +9,25 @@ use Carp;
 use Text::CSV qw|csv|;
 use Math::Currency;
 
+use aliased 'Acme::SSFCU::Report::History::Iterator';
 use aliased 'Acme::SSFCU::Report::History::Transaction';
 
-has csv_file     => ( is => 'ro' );
 has transactions => ( is => 'ro', required => 1 );
+has iterator => ( is => 'rw', default => sub { return Iterator->new( _history => shift ); });
 
 around BUILDARGS => sub {
     my ( $orig, $class, %args ) = @_;
 
-    $args{transactions} ||= parse_ssfcu_csv_file( $args{csv_file} );
+    $args{transactions} ||= parse_ssfcu_csv_file( delete $args{csv_file} );
 
     return $class->$orig(%args);
 };
+
+sub get_count {
+    my $self = shift;
+
+    return scalar @{$self->{transactions}};
+}
 
 sub parse_ssfcu_csv_file {
     my $file = shift;

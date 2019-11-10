@@ -10,10 +10,12 @@ sub calculate {
     my $history = shift;
 
     my %per_descriptions;
-    foreach my $trxn ( @{ $history->transactions } ) {
-        my $description = $trxn->description;
+    my $history_iterator = $history->iterator;
+    while ( !$history_iterator->is_done() ) {
+        my $description = $history_iterator->item()->description;
         $description =~ s/\d{2}\/\d{2}\s+?//;   #Remove dates to help condense
-        $per_descriptions{$description} += $trxn->amount;
+        $per_descriptions{$description} += $history_iterator->item()->amount;
+        $history_iterator->next;
     }
 
     my @sorted_desc = sort { $per_descriptions{$b} <=> $per_descriptions{$a} }

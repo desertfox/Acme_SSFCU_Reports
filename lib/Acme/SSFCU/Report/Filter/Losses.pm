@@ -11,10 +11,11 @@ sub calculate {
     my $class   = shift;
     my $history = shift;
 
-    my $total_income = Math::Currency->new('0.00');
-    foreach my $trxn ( @{ $history->transactions } ) {
-        next unless $trxn->amount < 0;
-        $total_income += $trxn->amount;
+    my $total_income     = Math::Currency->new('0.00');
+    my $history_iterator = $history->iterator;
+    while ( !$history_iterator->is_done() ) {
+        $total_income += $history_iterator->item()->amount;
+        $history_iterator->next;
     }
 
     return {

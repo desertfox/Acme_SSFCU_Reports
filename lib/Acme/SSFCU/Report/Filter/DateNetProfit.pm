@@ -10,16 +10,21 @@ sub calculate {
     my $history = shift;
 
     my %per_day_totals;
-    foreach my $trxn ( @{ $history->transactions } ) {
-        if ( exists $per_day_totals{ $trxn->date->ymd } ) {
-            $per_day_totals{ $trxn->date->ymd }{amount} += $trxn->amount;
+    my $history_iterator = $history->iterator;
+    while ( !$history_iterator->is_done() ) {
+        my $item = $history_iterator->item();
+
+        if ( exists $per_day_totals{ $item->date->ymd } ) {
+            $per_day_totals{ $item->date->ymd }{amount} += $item->amount;
         }
         else {
-            $per_day_totals{ $trxn->date->ymd } = {
-                date   => $trxn->date,
-                amount => $trxn->amount,
+            $per_day_totals{ $item->date->ymd } = {
+                date   => $item->date,
+                amount => $item->amount,
             };
         }
+
+        $history_iterator->next;
     }
 
     my @sorted_by_date_totals
