@@ -15,11 +15,11 @@ sub calculate {
     
     my $history_iterator = $history->iterator;
     while ( !$history_iterator->is_done() ) {
-        if ( $history_iterator->item()->amount < 0 ) {
+        if ( $history_iterator->get_transaction()->amount < 0 ) {
             $history_iterator->next;
             next;
         }
-        $total_income += $history_iterator->item()->amount;
+        $total_income += $history_iterator->get_transaction()->amount;
         $history_iterator->next;
     }
 

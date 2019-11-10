@@ -14,8 +14,8 @@ sub calculate {
     my $total_income     = Math::Currency->new('0.00');
     my $history_iterator = $history->iterator;
     while ( !$history_iterator->is_done() ) {
-        next unless $history_iterator->item()->amount;
-        $total_income += $history_iterator->item()->amount;
+        next unless $history_iterator->get_transaction()->amount;
+        $total_income += $history_iterator->get_transaction()->amount;
         $history_iterator->next;
     }
 

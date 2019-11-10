@@ -6,36 +6,57 @@ use warnings;
 use Moo;
 use namespace::autoclean;
 
+use Carp;
+
 use aliased 'Acme::SSFCU::Report::Output';
 use aliased 'Acme::SSFCU::Report::Filter';
 use aliased 'Acme::SSFCU::Report::History';
 
 #ABSTRACT: Module for generating various reports via SSFCU downloaded csv transaction histroy files.
 
-has history => ( is => 'ro', required => 1 );
-has filter  => ( is => 'ro', required => 1 );
-has output  => ( is => 'ro', default  => sub { Output->new(); } );
+has filter_list => (
+    is => 'rw',
+    isa =>
+        sub { croak "Filter must be arrayRef" unless ref $_[0] eq "ARRAY" },
+    required => 1
+);
 
-around BUILDARGS => sub {
-    my ( $orig, $class, %args ) = @_;
+has sources => (
+    is => 'rw',
+    isa =>
+        sub { croak "Filter must be arrayRef" unless ref $_[0] eq "ARRAY" },
+    required => 1
+);
 
-    my $source = delete $args{source};
-    $args{history} ||= History->new( csv_file => $source->{csv_file} )
-        if $source->{csv_file};
+has history => (
+    is      => 'ro',
+    default => sub { return History->new; },
+    handles => [qw|add_source|]
+);
 
-    my $filters = delete $args{filters};
-    $args{filter} ||= Filter->new( filters => $filters ) if scalar @$filters;
+has filter => (
+    is      => 'ro',
+    default => sub { return Filter->new; },
+    handles => [qw|add_filter|]
+);
 
-    my $output = delete $args{output};
-    $args{output} ||= Output->new( destination => $output );
+has output => ( is => 'ro', default => sub { return Output->new; } );
 
-    return $class->$orig(%args);
-};
+sub BUILD {
+    my $self = shift;
+
+    $self->add_source($_) foreach @{ $self->{sources} };
+
+    $self->add_filter($_) foreach @{ $self->{filter_list} };
+
+    return $self;
+}
 
 sub run {
     my $self = shift;
 
-    my $filtered_report_data_aref = $self->filter->generate_report_data( $self->history );
+    my $filtered_report_data_aref
+        = $self->filter->generate_report_data( $self->history );
 
     return $self->output->generate_output($filtered_report_data_aref);
 }

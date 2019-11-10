@@ -19,16 +19,17 @@ my ( $opt, $usage ) = describe_options(
     [ 'help', "print usage message and exit", { shortcircuit => 1 } ],
 );
 
+my @filters;
+push( @filters, 'NetProfit' )     if $opt->totals;
+push( @filters, 'DateNetProfit' ) if $opt->date;
+push( @filters, 'Issuer' )        if $opt->issuer;
+push( @filters, 'Gains' )         if $opt->gains;
+push( @filters, 'Losses' )        if $opt->losses;
+
 Report->new(
-    source  => { csv_file => $opt->file },
-    filters => [
-        { NetProfit     => $opt->totals },
-        { DateNetProfit => $opt->date },
-        { Issuer        => $opt->issuer },
-        { Gains         => $opt->gains },
-        { Losses        => $opt->losses },
-    ],
-    output => $opt->output,
+    sources     => [ $opt->file ],
+    filter_list => \@filters,
+    #output      => $opt->output,
 )->run;
 
 1;

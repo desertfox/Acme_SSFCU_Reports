@@ -6,9 +6,6 @@ use warnings;
 use Moo;
 use namespace::autoclean;
 
-use Carp;
-use Class::Load qw/load_class/;
-
 use Acme::SSFCU::Report::Stream::Print;
 
 sub generate_output {

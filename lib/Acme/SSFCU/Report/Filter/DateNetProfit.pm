@@ -12,7 +12,7 @@ sub calculate {
     my %per_day_totals;
     my $history_iterator = $history->iterator;
     while ( !$history_iterator->is_done() ) {
-        my $item = $history_iterator->item();
+        my $item = $history_iterator->get_transaction();
 
         if ( exists $per_day_totals{ $item->date->ymd } ) {
             $per_day_totals{ $item->date->ymd }{amount} += $item->amount;

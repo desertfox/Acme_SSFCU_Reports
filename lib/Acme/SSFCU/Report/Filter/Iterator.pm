@@ -1,5 +1,8 @@
 package Acme::SSFCU::Report::Filter::Iterator;
 
+use strict;
+use warnings;
+
 use Moo;
 use namespace::autoclean;
 
@@ -21,7 +24,7 @@ sub next {
     return $self->{_index}++;
 }
 
-sub item {
+sub get_filter {
     my $self = shift;
 
     my $filter_name = $self->{_filter}->{filters}[ $self->{_index} ];
@@ -34,6 +37,21 @@ sub reset_index {
     my $self = shift;
     $self->{_index} = 0;
     return 1;
+}
+
+sub add_filter {
+    my $self   = shift;
+    my $filter = shift;
+
+    push( @{ $self->{_filter}{filters} }, $filter );
+
+    return;
+}
+
+sub get_count {
+    my $self = shift;
+
+    return scalar @{ $self->{_filter}{filters} };
 }
 
 1;

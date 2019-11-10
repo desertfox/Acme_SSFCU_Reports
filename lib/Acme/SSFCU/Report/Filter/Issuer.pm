@@ -12,9 +12,9 @@ sub calculate {
     my %per_descriptions;
     my $history_iterator = $history->iterator;
     while ( !$history_iterator->is_done() ) {
-        my $description = $history_iterator->item()->description;
+        my $description = $history_iterator->get_transaction()->description;
         $description =~ s/\d{2}\/\d{2}\s+?//;   #Remove dates to help condense
-        $per_descriptions{$description} += $history_iterator->item()->amount;
+        $per_descriptions{$description} += $history_iterator->get_transaction()->amount;
         $history_iterator->next;
     }
 
