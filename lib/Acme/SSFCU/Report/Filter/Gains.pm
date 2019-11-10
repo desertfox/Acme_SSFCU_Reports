@@ -12,11 +12,14 @@ sub calculate {
     my $history = shift;
 
     my $total_income = Math::Currency->new('0.00');
-
+    
     my $history_iterator = $history->iterator;
     while ( !$history_iterator->is_done() ) {
+        if ( $history_iterator->item()->amount < 0 ) {
+            $history_iterator->next;
+            next;
+        }
         $total_income += $history_iterator->item()->amount;
-
         $history_iterator->next;
     }
 

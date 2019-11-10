@@ -5,31 +5,30 @@ package Acme::SSFCU::Report::Filter;
 use Moo;
 use namespace::autoclean;
 
-use Carp;
-use Class::Load qw/load_class/;
+use aliased 'Acme::SSFCU::Report::Filter::Iterator';
 
 has filters => ( is => 'rw' );
+has iterator =>
+    ( is => 'rw', default => sub { Iterator->new( _filter => shift ); } );
 
 sub generate_report_data {
     my $self    = shift;
     my $history = shift;
 
     my @results;
-    foreach my $filter_hash ( @{ $self->filters } ) {
-        my $filter_name = ( keys %$filter_hash )[0];
-
-        next
-            unless $filter_hash->{$filter_name};
-
-        my $filter = __PACKAGE__ . '::' . $filter_name;
-
-        load_class($filter);
-
-        push( @results, $filter->calculate($history) );
-
+    while ( !$self->iterator->is_done() ) {
+        my $item = $self->iterator->item();
+        push( @results, $item->calculate($history) );
+        $self->iterator->next;
     }
 
     return \@results;
+}
+
+sub get_count {
+    my $self = shift;
+
+    return scalar @{ $self->{filters} };
 }
 
 1;
