@@ -28,7 +28,7 @@ sub calculate {
     }
 
     my @sorted_by_date_totals
-        = sort { $per_day_totals{$b}{date} <=> $per_day_totals{$a}{date} }
+        = sort { DateTime->compare($per_day_totals{$b}{date}, $per_day_totals{$a}{date}) }
         keys %per_day_totals;
 
     my @data;
