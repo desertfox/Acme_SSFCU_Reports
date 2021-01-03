@@ -15,21 +15,25 @@ my ( $opt, $usage ) = describe_options(
     [ 'issuer|i', "Print Totals by Description Field" ],
     [ 'gains|g',  "Print Total Gains" ],
     [ 'losses|l', "Print Total Losses" ],
+    [ 'all|a', "Run all filters", { default => 0 } ],
     [ 'output|o', "Ouput, default STDOUT", { default => 'STDOUT' } ],
     [ 'help', "print usage message and exit", { shortcircuit => 1 } ],
 );
 
 my @filters;
-push( @filters, 'NetProfit' )     if $opt->totals;
-push( @filters, 'DateNetProfit' ) if $opt->date;
-push( @filters, 'Issuer' )        if $opt->issuer;
-push( @filters, 'Gains' )         if $opt->gains;
-push( @filters, 'Losses' )        if $opt->losses;
+if($opt->all) {
+    push( @filters, ( 'NetProfit', 'DateNetProfit', 'Issuer', 'Gains', 'Losses' ) );
+} else {
+    push( @filters, 'NetProfit' )     if $opt->totals;
+    push( @filters, 'DateNetProfit' ) if $opt->date;
+    push( @filters, 'Issuer' )        if $opt->issuer;
+    push( @filters, 'Gains' )         if $opt->gains;
+    push( @filters, 'Losses' )        if $opt->losses;
+}
 
 Report->run(
     sources     => [ $opt->file ],
     filter_list => \@filters,
-
     #output      => $opt->output,
 );
 
